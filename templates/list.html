@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+     <script type="text/javascript" src = "/static/countries.js"></script>
+</head>
+
+<body>
+    <div align="center">
+         <h1>Free JavaScript Country/State Selection Demo</h1>
+        <form method=post enctype=multipart/form-data action="{{ url_for('user_city')}}">
+             <hr/>
+             <br/>Select Country (with cities):
+             <select id="country" name="country" required></select>
+             <br />city:
+             <select name="state" id="state" required></select>
+             <br/>
+             <script language="javascript">
+                 populateCountries("country", "state");
+             </script>
+             <input type="submit" value="Submit">
+             <br/>
+             <br/>
+        </form>
+    </div>
+
+
+</body></html>

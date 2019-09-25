@@ -1,0 +1,200 @@
+
+<!------ Include the above in your HEAD tag ---------->
+
+
+<html>
+<head>
+<link href="/static/css/1.css" rel="stylesheet" id="bootstrap-css">
+<script src="/static/2.js"></script>
+<script src="/static/3.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
+
+
+<script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
+<link href="/static/css/4.css" type="text/css" rel="stylesheet">
+<link href="/static/css/style.css" type="text/css" rel="stylesheet">
+<link href="/static/css/site.css" rel="stylesheet" >
+</head>
+<body>
+<header>
+  <div class="collapse bg-dark" id="navbarHeader">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-8 col-md-7 py-4">
+          <h4 class="text-white">About</h4>
+          <p class="text-muted">Add some information about the album below, the author, or any other background context. Make it a few sentences long so folks can pick up some informative tidbits. Then, link them off to some social networking sites or contact information.</p>
+        </div>
+        <div class="col-sm-4 offset-md-1 py-4">
+          <h4 class="text-white">Contact</h4>
+          <ul class="list-unstyled">
+            <li><a href="#" class="text-white">Follow on Twitter</a></li>
+            <li><a href="#" class="text-white">Like on Facebook</a></li>
+            <li><a href="#" class="text-white">Email me</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="navbar navbar-dark bg-dark shadow-sm">
+    <div class="container d-flex justify-content-between">
+      <a href="#" class="navbar-brand d-flex align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" class="mr-2" viewBox="0 0 24 24" focusable="false"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <strong>Album</strong>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    {% if userinfo == None %}
+    <button class="login_button" onclick="window.location.href='{{url_for('login')}}'">Login</button>
+    {% else %}
+    <button class="login_button" onclick="window.location.href='{{url_for('logout')}}'">logout</button> 
+    {% endif %}
+
+    </div>
+  </div>
+</header>
+<section class="jumbotron text-center">
+<div class="container">  
+<h3 class=" text-center">Messaging</h3>
+<h3 >{{guide_id}} </h3>
+<button type="button" class="btn btn-primary" onclick="window.location.href='{{url_for('login')}}'">Sign in</button>
+<div id="info" data-value={{userinfo.user_id}} >{{userinfo}}</div>
+
+        <div class="mesgs">
+          <div id="allmsgs"class="msg_history">
+            <div class="incoming_msg">
+              <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+              <div class="received_msg">
+                <div class="received_withd_msg">
+                  <p>Test which is a new approach to have all
+                    solutions</p>
+                  <span class="time_date"> 11:01 AM    |    June 9</span></div>
+              </div>
+            </div>
+            <div class="outgoing_msg">
+              <div class="sent_msg">
+                <p>Test which is a new approach to have all
+                  solutions</p>
+                <span class="time_date"> 11:01 AM    |    June 9</span> </div>
+            </div>
+
+            <div class="incoming_msg">
+              <div class="incoming_msg_img"> <img src="https://ptetutorials.com/images/user-profile.png" alt="sunil"> </div>
+              <div class="received_msg">
+                <div class="received_withd_msg">
+                  <p>We work directly with our designers and suppliers,
+                    and sell direct to you, which means quality, exclusive
+                    products, at a price anyone can afford.</p>
+                  <span class="time_date"> 11:01 AM    |    Today</span></div>
+              </div>
+            </div>
+            {% for msg in msgs %}
+                {% if msg.msg_from == userinfo['user_id'] and room == msg.room %}
+
+                     <div class="outgoing_msg msg_container">
+                      <div class="sent_msg">
+                       <p>{{msg.msg}}</p>
+                       <span class="time_date">
+                           <script>
+                           ourDate = new Date("{{msg.created_at}}");
+                           x=ourDate.getTimezoneOffset()
+                           ourDate.setTime(ourDate.getTime() - x*60000);
+                           var options = { year: 'numeric', month: 'long', day: 'numeric' ,hour:"2-digit",minute:"2-digit"};
+                           document.write(
+                           ourDate.toLocaleString("en-US", options));
+                         </script>
+                       </span> </div>
+                     </div>
+                {% elif msg.msg_from != userinfo['user_id'] and room==msg.room  %}
+                    <div class="incoming_msg msg_container">
+                         <div class="incoming_msg_img"> 
+                          <img id="chat_imgs" src={{userinfo['picture']}} alt="sunil">
+                           </div>
+                          <div class="received_msg">
+                          <div class="received_withd_msg">
+                          <p>{{msg.msg}}</p>
+                          <span class="time_date">
+                            <script type="text/javascript">
+                                 ourDate = new Date("{{msg.created_at}}");
+                                 x=ourDate.getTimezoneOffset()
+                                 ourDate.setTime(ourDate.getTime() - x*60000);
+                                 var options = { year: 'numeric', month: 'long', day: 'numeric' ,hour:"2-digit",minute:"2-digit"};
+                                 document.write(
+                                 ourDate.toLocaleString("en-US", options));                              
+                            </script>
+                          </span></div>
+                            </div>
+                          </div>
+                {% endif %}
+            {% endfor %}
+          </div>
+          <div class="type_msg">
+            <div class="input_msg_write">
+              <input type="text" id="mymessage"class="write_msg" placeholder="Type a message" autocomplete="off">
+              <button id="sendbutton"class="msg_send_btn" type="button"><img src="/static/send.png" alt="sunil"></button>
+            </div>
+          </div>
+        </div>
+      </div>      
+    </div></div>
+  </section>
+    <script type="text/javascript">
+      userinfo = {{userinfo|tojson}}
+      picture=userinfo["picture"]
+      $(document).ready(function(){
+        var socket = io.connect();
+        socket.on('connect', function() {
+                 // Connected, let's sign-up for to receive messages for this room
+                 socket.emit('room', userinfo['user_id']);
+              });
+        socket.on('message',function(msg,msg_from,time){
+                                 ourDate = new Date(time);
+                                 x=ourDate.getTimezoneOffset()
+                                 ourDate.setTime(ourDate.getTime() - x*60000);
+                                 var options = { year: 'numeric', month: 'long', day: 'numeric' ,hour:"2-digit",minute:"2-digit"};
+                                 ourDate.toLocaleString("en-US", options);         
+          if (msg_from==userinfo['user_id']){
+            $('#allmsgs').append(" <div class='outgoing_msg msg_container'><div class='sent_msg'><p>"+msg+"</p><span class='time_date'>"+ourDate+"</span></div></div>"
+            );
+
+          }else{
+            $('#allmsgs').append("<div class='incoming_msg msg_container'><div class='incoming_msg_img'> <img id='chat_imgs' src="+picture+" alt='sunil'> </div><div class='received_msg'><div class='received_withd_msg'><p>"+msg+"</p><span class='time_date'>"+ourDate+"</span></div></div></div>");
+
+          }
+          $('#allmsgs').animate({
+                 scrollTop: $('#allmsgs').get(0).scrollHeight
+             }, 2000);
+        });
+        $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+        $('#sendbutton').on('click',function(){
+          socket.send($('#mymessage').val());
+          $('#mymessage').val('');
+
+        });
+        $("#mymessage").on('keyup', function (e) {
+            if (e.keyCode === 13) {
+                 socket.send($('#mymessage').val());
+                 $('#mymessage').val('');
+            }
+        });
+
+
+      });
+      $(document).ready(function() {
+    $('#allmsgs').animate({
+        scrollTop: $('#allmsgs').get(0).scrollHeight
+    }, 2000);
+});
+
+    </script>
+    </body>
+    </html>
+
+
+
+
+
+
